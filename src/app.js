@@ -1,4 +1,5 @@
 const express = require('express');
+const AdminAuth = require('./middlewares/auth');
 
 const app = express();
 
@@ -19,6 +20,12 @@ const r3 = (req, res, next) => {
     next();
     // res.send('lalalal land');
 }
+
+app.use('/Admin', AdminAuth);
+
+app.get('/Admin/getUser', (req, res) => {
+    res.send('Admin route');
+})
 
 
 //request handler
@@ -45,6 +52,8 @@ app.use("/users",(req,res, next) => {
 app.use('/getter', r1, r2, r3, (req, res) => {
     res.send('route handler five');
 });
+
+
 
 app.listen(8010, () => {
     console.log('Server is running on port 8010');
