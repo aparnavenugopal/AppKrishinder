@@ -27,6 +27,11 @@ app.get('/Admin/getUser', (req, res) => {
     res.send('Admin route');
 })
 
+app.use('/',(err, req, res, next) => {
+    console.log('error handler');
+    res.status(500).send('error handler');
+})
+
 
 //request handler
 app.use("/users",(req,res, next) => {
