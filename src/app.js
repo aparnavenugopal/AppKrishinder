@@ -5,16 +5,16 @@ require('./config/database');
 
 const app = express();
 
-app.post('/signup',(req, res) => {
+app.post('/signup',async (req, res) => {
     const user = new User({
-        firstName : 'Krishna',
-        lastName: "bujji",
-        emailId: 'krishna33@gmail.com',
-        password: 'krishna333',
-        age: 3,
+        firstName : 'Kitty',
+        lastName: "uday",
+        emailId: 'kitty33@gmail.com',
+        password: 'uday333',
+        age: 23,
         gender: 'male'
     });
-    user.save().then(() => {
+    await user.save().then(() => {
         res.send(user);
     }).catch((err) => {
         res.send(err);
