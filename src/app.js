@@ -5,20 +5,16 @@ require('./config/database');
 
 const app = express();
 
+app.use(express.json());
+
 app.post('/signup',async (req, res) => {
-    const user = new User({
-        firstName : 'Kitty',
-        lastName: "uday",
-        emailId: 'kitty33@gmail.com',
-        password: 'uday333',
-        age: 23,
-        gender: 'male'
-    });
-    await user.save().then(() => {
-        res.send(user);
-    }).catch((err) => {
-        res.send(err);
-    })
+   const user = new User(req.body); 
+   try{
+      await user.save();
+      res.status(201).send('user successfully added');
+   }catch(e){
+        res.status(400).send('error while adding user',e);
+   }
 })
 
 
