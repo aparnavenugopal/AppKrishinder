@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -18,11 +19,9 @@ const userSchema = new mongoose.Schema({
         required : true,
         lowercase: true,
         trim: true,
-        validate : {
-            validator : function(value){
-                return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
-            },
-            message : 'Invalid email format!!!'
+        validate: {
+            validator: validator.isEmail,
+            message: 'Invalid email format!!!'
         }     
     },
     password: {
@@ -38,7 +37,8 @@ const userSchema = new mongoose.Schema({
         }
     },
     age:{
-        type:   Number
+        type:   Number,
+        trim: true,
     },
     gender:{
         type: String,
@@ -52,8 +52,11 @@ const userSchema = new mongoose.Schema({
         }
 
     },
-    phoneNumber : {
-        type : Number
+    cellNumber : {
+        type : Number,
+        required: true,
+        trim: true,
+        maxlength : 10,
     },
     about : {
         type : String ,
@@ -63,6 +66,11 @@ const userSchema = new mongoose.Schema({
         type : [String],
         minlength : 1,
         maxlength: 10,
+
+    },
+    photoUrl : {
+        type :  String ,
+        default :  "https://as1.ftcdn.net/v2/jpg/10/35/96/52/1000_F_1035965234_Ae06GEzXhX03TGY8JO2MNYkcPa8CMrck.jpg"
 
     }
 },{
