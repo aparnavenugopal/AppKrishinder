@@ -3,6 +3,7 @@ const AuthRouter = express.Router();
 
 const { SignUpValidation, encryptPassword  } = require('../utils/helper');
 const User = require('../models/user');
+const { UserAuth } = require('../middlewares/auth');
 
 
 AuthRouter.post('/signup', async (req, res) => {
@@ -39,5 +40,12 @@ AuthRouter.post('/login', async (req, res) => {
     }
   
 });
+
+AuthRouter.post('/logout', (req, res) => {
+    res.cookie('token', null, {
+        expires: new Date(Date.now())
+    });
+    res.send();
+})
 
 module.exports = AuthRouter;

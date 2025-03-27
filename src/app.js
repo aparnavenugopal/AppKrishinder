@@ -1,7 +1,6 @@
 const express = require('express');
 const connectDB = require('./config/database');
 const User = require('./models/user');
-const { UpdateValidation, encryptPassword  } = require('./utils/helper');
 const cookieParser = require("cookie-parser");
 const AuthRouter = require('./routes/auth');
 const ProfileRouter = require('./routes/profile');
@@ -18,21 +17,6 @@ app.use('/', ProfileRouter);
 app.use('/', RequestRouter);
 
 
-app.patch('/update/:userId', async (req, res) => {
-    try {
-        await UpdateValidation(req.body);
-        if (req.body.password) {
-            req.body.password = await encryptPassword(req.body.password); 
-        }
-        const user = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
-        if (!user) {
-            return res.status(404).send('User cannot be updated as no record was found with this ID.');
-        }
-        res.status(200).send({ message: 'User successfully updated', updatedUser: user });
-    } catch (e) {
-        res.status(400).send({ error: 'Error while updating user', details: e.message });
-    }
-})
 
 app.get('/user', async (req, res) => {
     try {
