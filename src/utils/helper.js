@@ -56,8 +56,13 @@ const UpdateValidation = (user) => {
     }
 }
 
+const connectionRequestSend = () => {
+
+}
+
 module.exports = {
     SignUpValidation,
     UpdateValidation,
-    encryptPassword
+    encryptPassword,
+    connectionRequestSend,
 }
