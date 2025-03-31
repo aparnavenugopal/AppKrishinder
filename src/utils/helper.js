@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 const encryptPassword = async (password) => {
     console.log('Before hashing:', password);
@@ -6,7 +7,6 @@ const encryptPassword = async (password) => {
     console.log('After hashing:', hashedPassword);
     return hashedPassword;
 };
-
 
 const SignUpValidation = (user) => {
     if (user.skills !== undefined) {  
@@ -56,9 +56,27 @@ const UpdateValidation = (user) => {
     }
 }
 
-const connectionRequestSend = () => {
+const connectionRequestSend = async ({ fromUserId, toUserId, status }) => {
+    if (!status || !['ignored', 'interested'].includes(status)) {
+        throw new Error('Status must be either "ignored" or "interested".');
+    }
+    if (fromUserId === toUserId) {
+        throw new Error('Sender cannot send a connection request to themselves.');
+    }
 
-}
+    const [isValidUser, isValidConnect, existingConnection] = await Promise.all([
+        User.findById(fromUserId),
+        User.findById(toUserId),
+        User.findOne({ fromUserId, toUserId })
+    ]);
+
+    if (!isValidUser || !isValidConnect) {
+        throw new Error('Invalid sender or recipient ID.');
+    }
+    if (existingConnection) {
+        throw new Error('A connection request already exists between these users.');
+    }
+};
 
 module.exports = {
     SignUpValidation,

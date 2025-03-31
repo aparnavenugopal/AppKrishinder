@@ -1,20 +1,37 @@
 const express = require('express');
 const RequestRouter = express.Router();
+const mongoose = require('mongoose');
 
 const { UserAuth } = require('../middlewares/auth');
 const User = require('../models/user');
 const ConnectRequest = require('../models/connectionRequest');
 const connectRequestSend = require('../utils/helper');
 
-RequestRouter.post('/request/send/:status/:userId',UserAuth ,async (req, res) => {
-  try{
+RequestRouter.post('/request/send/:status/:touserId', UserAuth, async (req, res) => {
+  try {
      const fromUserId = req.user._id;
-     const toUserId = req.params.userId;
+     const toUserId = req.params.touserId;
      const status = req.params.status; 
+     
+     if (!fromUserId || !toUserId) {
+        throw new Error('User IDs to connect do not exist');
+     }
+     
+     const allowedStatus = ['ignored', 'interested'];
+     if(!allowedStatus.includes(status)){
+        return res.status(400).json({message:'invalid status type'})
+     }
 
 
-     if(!fromUserId || !toUserId){
-        throw new Error('user ids to connect does not exist');
+     const existingConnectionRequest = await ConnectRequest.findOne({
+      $or:[
+        {fromUserId, toUserId},
+        {fromUserId: toUserId, toUserId: fromUserId},
+      ],
+     });
+
+     if(existingConnectionRequest){
+      return res.status(400).json({messgae: 'cant connect connection request more than once'})
      }
 
      const newRequest = new ConnectRequest({
@@ -23,12 +40,12 @@ RequestRouter.post('/request/send/:status/:userId',UserAuth ,async (req, res) =>
         status,
      });
 
-     const data = newRequest.save();
-     res.status(201).json({ message: 'Connection request sent successfully', data: newRequest });
-     
-  }catch(e){
-     res.status(500).json({ messagae: 'soemthing went wrong while connecting', details : e.message});
+     const data = await newRequest.save();
+     res.status(201).json({ message: 'Connection request sent successfully', data });
+
+  } catch (e) {
+     res.status(500).json({ message: 'Something went wrong while connecting', details: e.message });
   }
 });
 
-module.exports = RequestRouter; 
+module.exports = RequestRouter;
