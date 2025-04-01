@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const AuthRouter = require('./routes/auth');
 const ProfileRouter = require('./routes/profile');
 const RequestRouter = require('./routes/requests');
+const UserRouter = require('./routes/user');
 require('./config/database');
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use('/', AuthRouter);
 app.use('/', ProfileRouter);
 app.use('/', RequestRouter);
+app.use('/', UserRouter);
 
 
 

@@ -23,6 +23,17 @@ const ConnectionRequestSchema = new mongoose.Schema({
    timestamps: true
 });
 
+ConnectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
+
+// ConnectionRequestSchema.pre('save', function(){
+//    const connectionRequest = this;
+
+//    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
+//       throw new Error('User cannot connect to themselves');
+//    }
+//    next();
+// })
+
 const ConnectionRequest = new mongoose.model('ConnectionRequest', ConnectionRequestSchema);
 
 module.exports = ConnectionRequest;
